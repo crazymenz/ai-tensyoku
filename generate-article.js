@@ -18,12 +18,12 @@ const THUMBS = {
 const DEFAULT_THUMB = "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=400&q=80";
 
 const ARTICLE_THEMES = [
-  {title:"【{year}年{month}月最新】AI転職市場の動向まとめ",category:"市場動向",tag:"市場動向",prompt:"2026年のAI・機械学習エンジニアの転職市場動向について、需要の高いスキル、年収トレンド、企業のニーズを800文字程度で解説してください。見出しをつけて読みやすく構成してください。"},
-  {title:"AIエンジニアが年収アップに成功した転職術【実例つき】",category:"転職ノウハウ",tag:"年収アップ",prompt:"AIエンジニアが転職で年収アップを実現するための具体的な方法を800文字程度で解説してください。スキルの見せ方、交渉術、タイミングなどの実践的なアドバイスを含めてください。見出しをつけて読みやすく構成してください。"},
-  {title:"LLM・生成AI専門エンジニアの転職完全ガイド",category:"職種解説",tag:"生成AI",prompt:"LLM・生成AI専門エンジニアの転職について、求められるスキルセット、年収相場、おすすめの転職サービスを800文字程度で解説してください。見出しをつけて読みやすく構成してください。"},
-  {title:"データサイエンティストからAIエンジニアへの転職ロードマップ",category:"キャリア",tag:"キャリアチェンジ",prompt:"データサイエンティストがAIエンジニアに転職するためのステップ、必要なスキルの習得方法、転職活動の進め方を800文字程度で解説してください。見出しをつけて読みやすく構成してください。"},
-  {title:"AI転職エージェントの選び方｜失敗しない3つのポイント",category:"転職ノウハウ",tag:"エージェント選び",prompt:"AI・IT系転職エージェントを選ぶ際の重要なポイントを800文字程度で解説してください。専門性、求人数、サポート体制などの観点から具体的なチェックポイントを含めてください。見出しをつけて読みやすく構成してください。"},
-  {title:"30代からのAIエンジニア転職は遅い？成功事例と戦略",category:"体験談",tag:"30代転職",prompt:"30代からAIエンジニアへの転職を考えている方向けに、成功のポイントと注意点を800文字程度で解説してください。年齢を強みに変える方法も含めてください。見出しをつけて読みやすく構成してください。"}
+  {titles:["【{year}年{month}月最新】AI転職市場の動向まとめ","2026年{month}月版｜AI転職市場の最新トレンド分析","AI転職市場レポート{year}年{month}月｜求人・年収動向を解説"],category:"市場動向",tag:"市場動向",prompt:"2026年のAI・機械学習エンジニアの転職市場動向について、需要の高いスキル、年収トレンド、企業のニーズを800文字程度で解説してください。見出しをつけて読みやすく構成してください。"},
+  {titles:["AIエンジニアが年収アップに成功した転職術【実例つき】","AI転職で年収200万アップ｜成功者が実践した5つの方法","AIエンジニアの年収交渉術｜内定後に100万円上げた実例"],category:"転職ノウハウ",tag:"年収アップ",prompt:"AIエンジニアが転職で年収アップを実現するための具体的な方法を800文字程度で解説してください。スキルの見せ方、交渉術、タイミングなどの実践的なアドバイスを含めてください。見出しをつけて読みやすく構成してください。"},
+  {titles:["LLM・生成AI専門エンジニアの転職完全ガイド","生成AIエンジニアへの転職｜2026年版スキルと年収","ChatGPT・Claude活用エンジニアの転職市場と年収相場"],category:"職種解説",tag:"生成AI",prompt:"LLM・生成AI専門エンジニアの転職について、求められるスキルセット、年収相場、おすすめの転職サービスを800文字程度で解説してください。見出しをつけて読みやすく構成してください。"},
+  {titles:["データサイエンティストからAIエンジニアへの転職ロードマップ","DS→AIエンジニア転職｜必要なスキルと学習ロードマップ","AIエンジニア転職を成功させる3つの戦略｜スキル・経験・面接対策"],category:"キャリア",tag:"キャリアチェンジ",prompt:"データサイエンティストがAIエンジニアに転職するためのステップ、必要なスキルの習得方法、転職活動の進め方を800文字程度で解説してください。見出しをつけて読みやすく構成してください。"},
+  {titles:["AI転職エージェントの選び方｜失敗しない3つのポイント","AI転職エージェント比較2026｜目的別おすすめ3選","AI・IT転職エージェント徹底比較｜自分に合った選び方とは"],category:"転職ノウハウ",tag:"エージェント選び",prompt:"AI・IT系転職エージェントを選ぶ際の重要なポイントを800文字程度で解説してください。専門性、求人数、サポート体制などの観点から具体的なチェックポイントを含めてください。見出しをつけて読みやすく構成してください。"},
+  {titles:["30代からのAIエンジニア転職は遅い？成功事例と戦略","30代AIエンジニア転職の成功法則｜年齢を武器にする戦略","30代からAIエンジニアへ転職した人の体験談と教訓"],category:"体験談",tag:"30代転職",prompt:"30代からAIエンジニアへの転職を考えている方向けに、成功のポイントと注意点を800文字程度で解説してください。年齢を強みに変える方法も含めてください。見出しをつけて読みやすく構成してください。"}
 ];
 
 function callAnthropicAPI(prompt) {
@@ -81,27 +81,22 @@ async function generateArticle() {
   const maxId = Math.max(...articles.map(a => a.id));
   const newId = maxId + 1;
 
+  const recentTags = articles.slice(0, 6).map(a => a.tag);
+  const usedTitles = articles.map(a => a.title);
+  const availableThemes = ARTICLE_THEMES.filter(t => !recentTags.includes(t.tag));
+  const theme = availableThemes.length > 0
+    ? availableThemes[Math.floor(Math.random() * availableThemes.length)]
+    : ARTICLE_THEMES.filter(t => t.tag !== articles[0].tag)[0] || ARTICLE_THEMES[0];
+
   const now = new Date();
-
-  // 既存記事のタイトル一覧（全件）を取得
-  const existingTitles = articles.map(a => a.title);
-
-  // テーマのタイトルを実際の文字列に展開して重複チェック
-  const availableThemes = ARTICLE_THEMES.filter(t => {
-    const resolvedTitle = t.title
-      .replace('{year}', now.getFullYear())
-      .replace('{month}', now.getMonth() + 1);
-    return !existingTitles.includes(resolvedTitle);
-  });
-
-  // 使えるテーマがなくなった場合は全テーマから選ぶ（ローテーション）
-  const themePool = availableThemes.length > 0 ? availableThemes : ARTICLE_THEMES;
-  const theme = themePool[Math.floor(Math.random() * themePool.length)];
-
-  const title = theme.title
-    .replace('{year}', now.getFullYear())
-    .replace('{month}', now.getMonth() + 1);
-
+  // 使われていないタイトルを選ぶ
+  const availableTitles = theme.titles.filter(t => !usedTitles.includes(
+    t.replace('{year}', now.getFullYear()).replace('{month}', now.getMonth() + 1)
+  ));
+  const titleTemplate = availableTitles.length > 0
+    ? availableTitles[Math.floor(Math.random() * availableTitles.length)]
+    : theme.titles[Math.floor(Math.random() * theme.titles.length)];
+  const title = titleTemplate.replace('{year}', now.getFullYear()).replace('{month}', now.getMonth() + 1);
   console.log('[' + now.toISOString() + '] 記事生成開始: ' + title);
 
   let content = '';
