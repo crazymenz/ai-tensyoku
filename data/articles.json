@@ -1,5 +1,15 @@
 [
   {
+    "id": 38,
+    "title": "ChatGPT・Claude活用エンジニアの転職市場と年収相場",
+    "excerpt": "ChatGPT・Claude活用エンジニアの転職市場と年収相場について、転職を検討しているAI・機械学習エンジニア向けに詳しく解説します。",
+    "date": "2026-07-12",
+    "category": "職種解説",
+    "readTime": 7,
+    "tag": "生成AI",
+    "url": "articles/article38.html"
+  },
+  {
     "id": 37,
     "title": "AI・IT転職エージェント徹底比較｜自分に合った選び方とは",
     "excerpt": "AI・IT転職エージェント徹底比較｜自分に合った選び方とはについて、転職を検討しているAI・機械学習エンジニア向けに詳しく解説します。",
@@ -188,15 +198,5 @@
     "readTime": 6,
     "tag": "年収アップ",
     "url": "articles/article19.html"
-  },
-  {
-    "id": 18,
-    "title": "2026年春のAI転職市場｜求人数・年収・採用トレンド総まとめ",
-    "excerpt": "2026年春のAI転職市場の最新動向。生成AI普及による求人変化と年収トレンドを詳しく解説。",
-    "date": "2026-05-03",
-    "category": "市場動向",
-    "readTime": 5,
-    "tag": "市場動向",
-    "url": "articles/article18.html"
   }
 ]
