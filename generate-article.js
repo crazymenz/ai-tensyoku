@@ -30,12 +30,37 @@ function callAnthropicAPI(prompt) {
   return new Promise((resolve, reject) => {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) { reject(new Error('ANTHROPIC_API_KEY が設定されていません')); return; }
-    const body = JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]});
-    const options = {hostname:'api.anthropic.com',path:'/v1/messages',method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','Content-Length':Buffer.byteLength(body)}};
+    const body = JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',  // 修正: 正しいモデル名
+      max_tokens: 1200,
+      messages: [{role: 'user', content: prompt}]
+    });
+    const options = {
+      hostname: 'api.anthropic.com',
+      path: '/v1/messages',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'Content-Length': Buffer.byteLength(body)
+      }
+    };
     const req = https.request(options, (res) => {
       let data = '';
       res.on('data', (chunk) => data += chunk);
-      res.on('end', () => { try { resolve(JSON.parse(data).content[0].text); } catch(e) { reject(e); } });
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.error) {
+            reject(new Error('API Error: ' + parsed.error.message));
+          } else {
+            resolve(parsed.content[0].text);
+          }
+        } catch(e) {
+          reject(new Error('Parse error: ' + e.message + ' / raw: ' + data.slice(0, 200)));
+        }
+      });
     });
     req.on('error', reject);
     req.write(body);
@@ -89,7 +114,6 @@ async function generateArticle() {
     : ARTICLE_THEMES.filter(t => t.tag !== articles[0].tag)[0] || ARTICLE_THEMES[0];
 
   const now = new Date();
-  // 使われていないタイトルを選ぶ
   const availableTitles = theme.titles.filter(t => !usedTitles.includes(
     t.replace('{year}', now.getFullYear()).replace('{month}', now.getMonth() + 1)
   ));
@@ -107,26 +131,23 @@ async function generateArticle() {
     console.log('APIからの生成成功');
   } catch(err) {
     console.error('API呼び出し失敗:', err.message);
-    content = '## ' + title + 'について\n\n' + title + 'について、転職を検討しているAI・機械学習エンジニア向けに詳しく解説します。';
-    excerpt = title + 'について、転職を検討しているAI・機械学習エンジニア向けに詳しく解説します。';
+    // フォールバック時はエラー内容がわかるようにして処理を止める
+    process.exit(1);
   }
 
   const articleFileName = 'article' + newId + '.html';
   const articleUrl = 'articles/' + articleFileName;
   const newArticle = {id:newId,title,excerpt,date:now.toISOString().split('T')[0],category:theme.category,readTime:Math.floor(Math.random()*4)+4,tag:theme.tag,url:articleUrl};
 
-  // 記事HTMLページを生成
   const articleHtml = generateArticleHtml(newArticle, content);
   fs.writeFileSync(path.join(ARTICLES_DIR, articleFileName), articleHtml);
   console.log('記事ページ生成: ' + articleFileName);
 
-  // articles.jsonを更新（既存記事のurlも保持）
   articles.unshift(newArticle);
   if (articles.length > 20) articles.splice(20);
   fs.writeFileSync(ARTICLES_FILE, JSON.stringify(articles, null, 2));
   console.log('[' + now.toISOString() + '] 記事追加完了: ID=' + newArticle.id);
 
-  // index.htmlも更新
   updateIndexHtml(articles);
 }
 
