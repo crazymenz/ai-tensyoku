@@ -1,0 +1,23 @@
+name: Regenerate Empty Articles
+on:
+  workflow_dispatch:  # 手動実行のみ
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Regenerate empty articles
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node regenerate-empty-articles.js
+      - name: Commit and push
+        run: |
+          git config --global user.name 'AI転職ナビBot'
+          git config --global user.email 'bot@example.com'
+          git add data/articles.json articles/
+          git commit -m "fix: regenerate empty articles $(date +%Y-%m-%d)" || exit 0
+          git push
